@@ -1,0 +1,61 @@
+from microbit import *
+import neopixel
+import radio, music
+np = neopixel.NeoPixel(pin0, 8)
+
+def validate_input(input_str):
+    # Split the input by spaces
+    input_list = input_str.split()
+
+    # Check if there are exactly four elements
+    if len(input_list) != 4:
+        return False
+
+    # Try to convert each element to an integer, if an error occurs, it's not valid
+    try:
+        i, r, g, b = map(int, input_list)
+        return True
+    except ValueError:
+        return False
+
+def channelSelect():
+    while True:
+            try:
+                channel = int(input('Channel: '))
+                if 0 <= channel <= 83:
+                    break
+                else:
+                    print("Channel must be between 0 and 83.")
+                    display.show('E')
+            except ValueError:
+                print("Invalid channel.")
+                display.show('E')
+        
+    radio.config(channel=channel, power=7)
+    display.show(channel)
+    
+radio.on()
+
+channelSelect()
+
+while True:
+    for i in range(8):
+        if button_a.is_pressed():
+            message = input("#")
+            radio.send(message)
+        
+        if button_b.is_pressed():
+            channelSelect()
+        
+        received = radio.receive()
+        if received:
+            music.BA_DING
+            r = ""
+            r = received
+            if(validate_input(r)):
+                i, r, g, b = map(int, r.split())
+                np[i] = (r,g,b)
+                np.show()
+
+
+
