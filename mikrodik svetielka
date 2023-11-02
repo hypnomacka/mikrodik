@@ -3,6 +3,9 @@ import neopixel
 import radio, music
 np = neopixel.NeoPixel(pin0, 8)
 
+def smajlik():
+    radio.send("10 0 0 0")
+
 def validate_input(input_str):
     # Split the input by spaces
     if(input_str == "nygga"):
@@ -49,7 +52,13 @@ while True:
     for i in range(8):
         if button_a.is_pressed():
             message = input("#")
-            radio.send(message)
+            if(message != "nigga"):
+                radio.send(message)
+            else:
+                while True:
+                    smajlik()
+                    if(button_a.is_pressed()):
+                        break
         
         if button_b.is_pressed():
             channelSelect()
